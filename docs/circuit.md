@@ -19,6 +19,13 @@
 - Relay NO -> Pump +
 - Pump - -> External power -
 
+## Power & Safety Notes
+- Use an external source sized for pump current; do not power pump from Arduino 5V.
+- Keep Arduino GND and relay/sensor GND common.
+- Keep water away from exposed electronics.
+
+## Relay Logic Note
+- If your relay is active-HIGH, set `RELAY_ACTIVE_LOW` to `false` in `src/automatic_watering_system.ino`.
 Use an external power source sized for the pump. Do not drive pump current from Arduino 5V.
 
 ## Notes
