@@ -26,3 +26,8 @@
 
 ## Relay Logic Note
 - If your relay is active-HIGH, set `RELAY_ACTIVE_LOW` to `false` in `src/automatic_watering_system.ino`.
+Use an external power source sized for the pump. Do not drive pump current from Arduino 5V.
+
+## Notes
+- If your relay is active-HIGH, set `RELAY_ACTIVE_LOW` to `false` in code.
+- Keep wiring dry and secure.
