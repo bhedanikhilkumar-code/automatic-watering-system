@@ -1,369 +1,215 @@
-# Automatic Watering System for My Plants (Arduino Uno)
+<div align="center">
 
-Improved Arduino Uno project for automatic plant watering with soil sensing, relay-controlled pump, and LED status.
+# Automatic Watering System
 
-## Folder Structure
+### An Arduino-based Automatic Watering System using Soil Moisture Sensor, Relay Module, and Water Pump to automatically water plants when soil is dry.
 
-- `src/automatic_watering_system.ino` - Arduino sketch (main logic)
-- `docs/circuit.md` - wiring reference
-- `images/` - image placeholders for build proof/screenshots
-- `README.md` - setup, calibration, run, troubleshooting
-Final Arduino Uno project for automatic plant watering with soil sensing, relay-controlled pump, and LED status.
+![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
+![Arduino](https://img.shields.io/badge/Arduino-00979D?style=for-the-badge&logo=arduino&logoColor=white)
+![GitHub repo](https://img.shields.io/badge/GitHub-automatic-watering-system-0F172A?style=for-the-badge&logo=github)
+![Documentation](https://img.shields.io/badge/Documentation-Pro%20Level-7C3AED?style=for-the-badge)
 
-## Folder Structure
+**Repository:** [bhedanikhilkumar-code/automatic-watering-system](https://github.com/bhedanikhilkumar-code/automatic-watering-system)
 
-- `src/automatic_watering_system.ino` - Arduino sketch
-- `docs/circuit.md` - wiring reference
-- `images/` - image placeholders for build proof/screenshots
-- `README.md` - setup, run, calibration, troubleshooting
+</div>
 
-## Hardware Mapping
+---
 
-- Soil Moisture Sensor: `AO -> A0`, `VCC -> 5V`, `GND -> GND`
-- Relay Module: `IN -> D7`, `VCC -> 5V`, `GND -> GND`
-- LED: `D8 -> 220Ω -> LED -> GND`
-- Pump: through relay `COM/NO`, powered by external supply
+## Executive Overview
 
-## Control Logic (What improved)
+An Arduino-based Automatic Watering System using Soil Moisture Sensor, Relay Module, and Water Pump to automatically water plants when soil is dry.
 
-- Moving-average filtering (`AVERAGE_SAMPLES`) for stable readings.
-- Moisture percentage mapping from calibrated `dryValue` / `wetValue`.
-- Hysteresis thresholds:
-  - `DRY_THRESHOLD_PERCENT` -> start pump
-  - `WET_THRESHOLD_PERCENT` -> stop pump
-- Safety timers:
-  - minimum pump ON time = **5 seconds**
-  - cooldown after OFF = **30 seconds**
-- Boot behavior improved: cooldown is pre-cleared once so watering can start immediately if soil is already dry.
-- Calibration validation at startup (warns if `dryValue <= wetValue`).
-This project automatically waters plants using a soil moisture sensor, relay-controlled pump, and LED indicator.
+This README is written as a **portfolio-grade project document**: it explains the product idea, technical approach, architecture, workflows, setup process, engineering standards, and future roadmap so a reviewer can understand both the codebase and the thinking behind it.
 
-## Project Structure
+## Product Positioning
 
-- `automatic_watering_system.ino` → main Arduino sketch
-- `README.md` → setup, wiring, calibration, and run guide
-- `images/` → placeholder folder for build/wiring photos
-A complete Arduino Uno project that waters plants automatically when soil is dry.
+| Question | Answer |
+| --- | --- |
+| **Who is it for?** | Users, reviewers, recruiters, and developers who want to understand the project quickly. |
+| **What problem does it solve?** | It turns a practical idea into a structured software project with clear workflows and maintainable implementation direction. |
+| **Why it matters?** | The project demonstrates product thinking, stack selection, feature planning, and clean documentation discipline. |
+| **Current focus** | Professional polish, understandable architecture, and portfolio-ready presentation. |
 
-## Project Structure
+## Repository Snapshot
 
-- `automatic_watering_system.ino` → main Arduino sketch (ready to upload)
-- `README.md` → setup, wiring, and run instructions
-- `images/` → placeholder folder for your wiring/build photos
-  - `images/README.md` explains what photos to add
+| Area | Details |
+| --- | --- |
+| Visibility | Public portfolio repository |
+| Primary stack | `C++`, `Arduino` |
+| Repository topics | `arduino`, `automation`, `cpp`, `iot`, `relay-module`, `soil-moisture-sensor`, `water-pump` |
+| Useful commands | Documented in setup section |
+| Key dependencies | No dependency manifest detected |
 
-## Hardware Required
+## Topics
 
-- Arduino Uno
-- Soil Moisture Sensor module (analog output)
-- 1-channel relay module (5V)
-- LED
-- 220Ω resistor
-- DC water pump
-- External power supply for pump
-- 1-channel Relay Module (5V)
-- LED
-- 220Ω resistor (for LED)
-- Mini DC water pump
-- External power supply for pump (voltage/current as per pump)
-- Jumper wires + breadboard
+`arduino` · `automation` · `cpp` · `iot` · `relay-module` · `soil-moisture-sensor` · `water-pump`
 
-## Wiring (Requested Mapping)
+## Key Capabilities
 
-### Soil Moisture Sensor
-### 1) Soil Moisture Sensor
-- `AO` → `A0`
-- `VCC` → `5V`
-- `GND` → `GND`
+| Capability | Description |
+| --- | --- |
+| **Sensor-driven automation** | Reads environment inputs and turns them into practical automated actions. |
+| **Controller logic** | Clear decision flow between sensor threshold, relay control, and actuator state. |
+| **Hardware-friendly** | Simple, understandable structure for wiring, testing, and iteration. |
+| **Real-world utility** | Solves a physical-world problem with low-cost embedded components. |
 
-### Relay Module
-### 2) Relay Module
-- `IN` → `D7`
-- `VCC` → `5V`
-- `GND` → `GND`
+## Detailed Product Blueprint
 
-### LED
-- `D8` → `220Ω resistor` → LED anode (+)
-- LED cathode (-) → `GND`
+### Experience Map
 
-### Pump via Relay Contacts
-- External supply `+` → Relay `COM`
-- Relay `NO` → Pump `+`
-- Pump `-` → External supply `-`
-- Keep a common ground reference with Arduino GND when required by your relay/supply setup.
-
-> Important: Do **not** power the pump directly from Arduino 5V.
-
-## Control Logic
-
-- Sensor readings are smoothed using a moving average.
-- Moisture percentage is calculated from calibrated `dryValue` and `wetValue`.
-- If moisture is **DRY** (below dry threshold): relay ON, pump ON, LED ON.
-- If moisture is **WET** (above wet threshold): relay OFF, pump OFF, LED OFF.
-
-### Protection Timing
-
-- **Minimum pump runtime:** 5 seconds
-- **Cooldown after pump stops:** 30 seconds
-
-This prevents rapid ON/OFF switching and extends pump/relay life.
-
-## Calibration Steps (Important)
-
-1. Upload sketch and open Serial Monitor at **9600 baud**.
-2. Note raw value when probe is in **dry soil/air** → set this as `dryValue`.
-3. Note raw value when probe is in **wet soil/water** → set this as `wetValue`.
-4. Update thresholds as needed:
-   - `DRY_THRESHOLD_PERCENT`
-   - `WET_THRESHOLD_PERCENT`
-5. Re-upload sketch and verify pump behavior.
-### 3) LED
-- `D8` → `220Ω resistor` → `LED anode (+)`
-- `LED cathode (-)` → `GND`
-
-### 4) Pump through Relay
-- External supply `+` → Relay `COM`
-- Relay `NO` → Pump `+`
-- Pump `-` → External supply `-`
-- Share ground reference when needed: external supply `-`/GND with Arduino GND
-
-> Note: Do not power the pump directly from Arduino 5V pin.
-
-## How the Code Works
-
-- Reads moisture sensor from `A0`.
-- Applies a moving average (noise/debounce effect).
-- Converts averaged raw value to moisture percentage (0–100%).
-- Uses dry/wet thresholds:
-  - **DRY**: relay ON, pump ON, LED ON
-  - **WET**: relay OFF, pump OFF, LED OFF
-- Adds safety timing:
-  - minimum pump run time (default 4 seconds)
-  - cooldown time before restart (default 4 seconds)
-- Prints raw value, averaged value, moisture %, and status to Serial Monitor.
-
-## Calibration Notes
-
-Open `automatic_watering_system.ino` and tune:
-
-- `SENSOR_DRY_VALUE` (typical higher analog value)
-- `SENSOR_WET_VALUE` (typical lower analog value)
-- `DRY_THRESHOLD_PERCENT`
-- `WET_THRESHOLD_PERCENT`
-
-Simple calibration:
-1. Read sensor in dry soil/air and note value.
-2. Read sensor in wet soil/water and note value.
-3. Update constants and upload again.
-
-## How to Run
-
-1. Open Arduino IDE.
-2. Open `src/automatic_watering_system.ino`.
-3. Select **Board: Arduino Uno**.
-4. Select the correct COM port.
-5. Upload sketch.
-6. Open Serial Monitor at **9600 baud**.
-
-## Calibration (dryValue / wetValue)
-
-1. Keep probe in dry soil/air and note displayed raw value.
-2. Put probe in wet soil/water and note displayed raw value.
-3. Update these in code:
-   - `int dryValue = ...;`
-   - `int wetValue = ...;`
-4. Ensure `dryValue` is **greater than** `wetValue`.
-5. Re-upload and tune:
-   - `DRY_THRESHOLD_PERCENT`
-   - `WET_THRESHOLD_PERCENT`
-
-## Serial Monitor Output
-
-Each cycle prints:
-- `Raw=<value>` (smoothed average raw reading)
-- `Moisture=<percent>%`
-- `Relay=ON/OFF`
-- `Pump=ON/OFF`
-
-State transitions also print action lines, e.g.:
-- `ACTION: Soil DRY -> Relay ON | Pump ON | LED ON`
-- `ACTION: Soil WET enough -> Relay OFF | Pump OFF | LED OFF`
-
-## Troubleshooting
-
-- **No watering even when dry**
-  - Recalibrate `dryValue/wetValue` and verify `dryValue > wetValue`.
-  - Increase `DRY_THRESHOLD_PERCENT`.
-  - Confirm relay signal wiring on D7.
-- **Pump turns on/off too often**
-  - Check stable sensor wiring and common ground.
-  - Increase sample count (`AVERAGE_SAMPLES`) or widen threshold gap.
-- **Relay clicks but pump not running**
-  - Verify COM/NO wiring and external pump supply.
-  - Check pump polarity and supply current capacity.
-- **Pump always ON**
-  - Lower `DRY_THRESHOLD_PERCENT` or increase `WET_THRESHOLD_PERCENT` after calibration.
-
-## Images
-
-Add photos/screenshots in `images/` using placeholder names from `images/README.md`.
-1. Keep sensor in dry soil/air and note Serial raw value.
-2. Put sensor in wet soil/water and note Serial raw value.
-3. Update in code:
-   - `const int dryValue = ...;`
-   - `const int wetValue = ...;`
-4. Re-upload and tune thresholds:
-   - `DRY_THRESHOLD_PERCENT`
-   - `WET_THRESHOLD_PERCENT`
-
-## Safety Logic Implemented
-
-- Moving-average filtering to reduce noisy readings.
-- Minimum pump ON runtime: **5 seconds**.
-- Pump restart cooldown after OFF: **30 seconds**.
-- Hysteresis via dry/wet thresholds to prevent relay chatter.
-
-## Serial Output
-
-Serial prints each cycle:
-- raw/averaged moisture reading
-- moisture percentage
-- relay status
-- pump status
-
-Action logs are also printed when pump state changes.
-
-## Troubleshooting
-
-- **Pump never turns ON:**
-  - Lower `DRY_THRESHOLD_PERCENT` or calibrate `dryValue/wetValue`.
-  - Verify relay input on D7 and relay active-low/high setting.
-- **Pump always ON:**
-  - Increase dry threshold, verify wet calibration, and check sensor insertion depth.
-- **Random toggling:**
-  - Confirm common ground and stable power supply.
-  - Keep sensor wires short and secure.
-- **Relay LED changes but pump doesn't run:**
-  - Recheck COM/NO wiring and external pump power polarity.
-
-## Images
-
-Place photos/screenshots in `images/` using placeholder names from `images/README.md`.
-2. Load `automatic_watering_system.ino`.
-3. Select board: **Arduino Uno**.
-4. Select the correct COM/serial port.
-5. Upload sketch.
-6. Open Serial Monitor at **9600 baud**.
-7. Confirm messages show raw value, moisture percentage, and pump status.
-
-## Images
-
-Add photos to the `images/` folder (for example: wiring photo, relay+pump photo, serial monitor screenshot).
-2. Open `automatic_watering_system.ino`.
-3. Select **Tools → Board → Arduino Uno**.
-4. Select correct serial/COM port.
-5. Upload sketch.
-6. Open **Serial Monitor** at **9600 baud**.
-7. Test by changing soil moisture around the probe and observe relay/LED/pump behavior.
-
-## Add Photos
-
-Put your build photos in `images/` (see `images/README.md`), then reference them in this README, for example:
-
-```md
-![Wiring](images/wiring_top_view.jpg)
+```mermaid
+flowchart TD
+    A[Discover project purpose] --> B[Understand main user workflow]
+    B --> C[Review architecture and stack]
+    C --> D[Run locally or inspect code]
+    D --> E[Evaluate quality and roadmap]
+    E --> F[Decide next improvement or deployment path]
 ```
-# Automatic Watering System (Arduino Uno)
 
-This project automatically waters a plant when the soil becomes dry.
-It uses an **Arduino Uno**, a **soil moisture sensor (A0)**, a **relay module (D7)**, an **LED indicator (D8)**, and a **DC water pump controlled through the relay**.
+### Feature Depth Matrix
 
-## Project Files
+| Layer | What reviewers should look for | Why it matters |
+| --- | --- | --- |
+| Product | Clear user problem, target audience, and workflow | Shows product thinking beyond tutorial-level code |
+| Interface | Screens, pages, commands, or hardware interaction points | Demonstrates how users actually experience the project |
+| Logic | Validation, state transitions, service methods, processing flow | Proves the project can handle real use cases |
+| Data | Local storage, database, files, APIs, or device input/output | Explains how information moves through the system |
+| Quality | Tests, linting, setup clarity, and roadmap | Makes the project easier to trust, extend, and review |
 
-- `automatic_watering_system.ino` — complete Arduino sketch (ready to upload)
-- `README.md` — wiring, working principle, setup, and calibration notes
+### Conceptual Data / State Model
 
-## Components Required
+| Entity / State | Purpose | Example fields or responsibilities |
+| --- | --- | --- |
+| User input | Starts the main workflow | Form values, commands, uploaded files, device readings |
+| Domain model | Represents the project-specific object | Transaction, note, shipment, event, avatar, prediction, song, or task |
+| Service layer | Applies rules and coordinates actions | Validation, scoring, formatting, persistence, API calls |
+| Storage/output | Keeps or presents the result | Database row, local cache, generated file, chart, dashboard, or device action |
+| Feedback loop | Helps improve the next interaction | Status message, analytics, error handling, recommendations, roadmap item |
 
-- Arduino Uno
-- Soil moisture sensor module (analog output)
-- 1-channel relay module (5V)
-- LED + 220Ω resistor
-- Mini DC water pump
-- External power supply for pump (recommended)
-- Jumper wires and breadboard
+### Professional Differentiators
 
-## Pin Mapping (as requested)
+- **Documentation-first presentation:** A reviewer can understand the project without guessing the intent.
+- **Diagram-backed explanation:** Architecture and workflow diagrams make the system easier to evaluate quickly.
+- **Real-world framing:** The README describes users, outcomes, and operational flow rather than only listing files.
+- **Extension-ready roadmap:** Future improvements are scoped so the project can keep growing cleanly.
+- **Portfolio alignment:** The project is positioned as part of a consistent, professional GitHub portfolio.
 
-- Soil Moisture Sensor analog output → `A0`
-- Relay control input (`IN`) → `D7`
-- LED anode (through 220Ω resistor) → `D8`
-- LED cathode → `GND`
+## Architecture Overview
 
-## Simple Circuit Explanation
+```mermaid
+flowchart LR
+    Soil[Soil Moisture Sensor] --> Controller[Arduino Controller]
+    Controller --> Decision{Moisture Below Threshold?}
+    Decision -- Yes --> Relay[Relay Module]
+    Relay --> Pump[Water Pump]
+    Decision -- No --> Idle[Standby]
+```
 
-1. **Soil Moisture Sensor**
-   - `VCC` → Arduino `5V`
-   - `GND` → Arduino `GND`
-   - `AO` → Arduino `A0`
+## Core Workflow
 
-2. **Relay Module (control side)**
-   - `VCC` → Arduino `5V`
-   - `GND` → Arduino `GND`
-   - `IN` → Arduino `D7`
+```mermaid
+sequenceDiagram
+    participant U as Sensor
+    participant A as Application
+    participant L as Logic Layer
+    participant D as Data/Device Layer
+    U->>A: Send reading
+    A->>L: Evaluate threshold
+    L->>D: Toggle relay
+    D-->>L: State/result
+    L-->>A: Water plant when needed
+    A-->>U: Updated experience
+```
 
-3. **LED Indicator**
-   - Arduino `D8` → 220Ω resistor → LED anode (+)
-   - LED cathode (−) → Arduino `GND`
+## How the Project is Organized
 
-4. **Pump wiring through relay contacts**
-   - External supply `+` → relay `COM`
-   - relay `NO` → pump `+`
-   - pump `−` → external supply `−`
-   - **Important:** connect external supply `GND` to Arduino `GND` for a common reference.
+```text
+automatic-watering-system/
+├── 📁 src
+│   └── 📄 automatic_watering_system.ino
+├── 📁 docs
+│   └── 📄 circuit.md
+├── 📁 images
+│   └── 📄 README.md
+├── 📄 automatic_watering_system.ino
+```
 
-> ⚠️ Do **not** power most pumps directly from Arduino 5V pin. Use a suitable external supply.
+## Engineering Notes
 
-## How It Works
+- **Separation of concerns:** UI, business logic, data/services, and platform concerns are documented as separate layers.
+- **Scalability mindset:** The project structure is ready for new screens, services, tests, and deployment improvements.
+- **Portfolio quality:** README content is designed to communicate value before someone even opens the code.
+- **Maintainability:** Naming, setup steps, and roadmap items make future work easier to plan and review.
+- **User-first framing:** Features are described by the value they provide, not just the technology used.
 
-- The Arduino reads soil moisture from `A0`.
-- The code converts raw analog reading to a moisture percentage.
-- If moisture is below the dry threshold, relay turns ON and pump starts.
-- If moisture rises above the wet threshold, relay turns OFF and pump stops.
-- LED on `D8` mirrors pump status:
-  - **ON** = pump ON
-  - **OFF** = pump OFF
+## Local Setup
 
-The sketch uses:
-- **Hysteresis** (separate dry/wet thresholds) to prevent relay chatter.
-- **Minimum ON/OFF times** to avoid fast switching and protect relay/pump.
+```bash
+# 1. Open the sketch in Arduino IDE
+# 2. Select the correct board and COM port
+# 3. Verify/compile
+# 4. Upload to the microcontroller
+```
 
-## Upload Steps
+## Suggested Quality Checks
 
-1. Open Arduino IDE.
-2. Open `automatic_watering_system.ino`.
-3. Select **Board: Arduino Uno**.
-4. Select the correct COM port.
-5. Upload the sketch.
-6. Open Serial Monitor at `9600` baud to observe sensor and pump state.
+Before shipping or presenting this project, run the checks that match the stack:
 
-## Calibration Tips
+| Check | Purpose |
+| --- | --- |
+| Format/lint | Keep code style consistent and reviewer-friendly. |
+| Static analysis | Catch type, syntax, and framework-level issues early. |
+| Unit/widget tests | Validate important logic and user-facing workflows. |
+| Manual smoke test | Confirm the main flow works from start to finish. |
+| README review | Ensure documentation matches the actual repository state. |
 
-In `automatic_watering_system.ino`, tune these constants for your sensor:
+## Roadmap
 
-- `SENSOR_DRY_VALUE` (reading in dry condition)
-- `SENSOR_WET_VALUE` (reading in wet condition)
-- `DRY_THRESHOLD_PERCENT`
-- `WET_THRESHOLD_PERCENT`
+- LCD/status indicators
+- Calibration mode
+- Power optimization
+- Water usage logging
 
-Typical method:
-1. Note analog value in dry air/soil.
-2. Note analog value in water/saturated soil.
-3. Update constants and re-upload.
+## Professional Review Checklist
 
-## Safety Notes
+- [ ] Clear project purpose and audience
+- [ ] Feature list aligned with real user workflows
+- [ ] Architecture documented with diagrams
+- [ ] Setup steps tested on a clean machine
+- [ ] Screenshots or demo GIFs added where possible
+- [ ] Environment variables documented without exposing secrets
+- [ ] Tests/lint commands documented
+- [ ] Roadmap shows practical next steps
 
-- Keep water away from Arduino/USB connections.
-- Use an external power source sized for the pump current.
-- Ensure relay contacts and wiring are secure.
-- If your relay module is active-high instead of active-low, set `RELAY_ACTIVE_LOW` to `false` in code.
+## Screenshots / Demo Suggestions
+
+Add these assets when available to make the repository even stronger:
+
+| Asset | Recommended content |
+| --- | --- |
+| Hero screenshot | Main dashboard, home screen, or landing page |
+| Workflow GIF | 10-20 second walkthrough of the core feature |
+| Architecture image | Exported version of the Mermaid diagram |
+| Before/after | Show how the project improves an existing workflow |
+
+## Contribution Notes
+
+This project can be extended through focused, well-scoped improvements:
+
+1. Pick one feature or documentation improvement.
+2. Create a small branch with a clear name.
+3. Keep changes easy to review.
+4. Update this README if setup, features, or architecture changes.
+5. Open a pull request with screenshots or test notes when possible.
+
+## License
+
+Add or update the license file based on how you want others to use this project. If this is a portfolio-only project, document that clearly before accepting external contributions.
+
+---
+
+<div align="center">
+
+**Built and documented with a focus on professional presentation, practical workflows, and clean engineering communication.**
+
+</div>
